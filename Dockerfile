@@ -12,4 +12,6 @@ COPY .env ./
 
 EXPOSE ${OUTER_PORT}
 
-CMD ["npm", "run", "dev"]
+RUN npm run build
+
+CMD ["npm", "run", "start"]

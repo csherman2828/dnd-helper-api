@@ -17,5 +17,19 @@ services:
     volumes:
       - ./:/usr/app
       - ignore:/usr/app/node_modules
+  prod:
+    container_name: shermaniac-dnd-helper-express-prod
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - INNER_PORT = ${INNER_PORT}
+        - OUTER_PORT = ${OUTER_PORT}
+    ports:
+      - ${OUTER_PORT}:${INNER_PORT}
+    env_file:
+      - .env
+    volumes:
+      - /usr/app
 volumes:
   ignore:

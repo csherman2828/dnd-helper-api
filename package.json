@@ -6,8 +6,8 @@
   "license": "ISC",
   "scripts": {
     "build": "tsc",
-    "start:dev": "node -r dotenv/config dist/server.js",
-    "start:watch": "nodemon -r dotenv/config src/server.ts"
+    "start": "node -r dotenv/config dist/server.js",
+    "dev": "nodemon -r dotenv/config src/server.ts"
   },
   "dependencies": {
     "express": "^4.21.1"
