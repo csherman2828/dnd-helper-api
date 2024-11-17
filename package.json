@@ -1,0 +1,21 @@
+{
+  "name": "shermaniac-dnd-helper-express",
+  "author": "csherman2828",
+  "description": "Express app for Shermaniac D&D Helper",
+  "version": "1.0.0",
+  "license": "ISC",
+  "scripts": {
+    "start": "node src/app.js"
+  },
+  "dependencies": {
+    "express": "^4.21.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.15.0",
+    "eslint": "^9.15.0",
+    "globals": "^15.12.0",
+    "prettier": "3.3.3",
+    "typescript-eslint": "^8.14.0"
+  },
+  "keywords": []
+}
