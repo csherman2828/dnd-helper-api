@@ -1,0 +1,21 @@
+meta {
+  name: Set Refresh Token
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{URL}}/tokens
+  body: json
+  auth: none
+}
+
+headers {
+  x-access-token: {{accessToken}}
+}
+
+body:json {
+  {
+    "refreshToken": "{{refreshToken}}"
+  }
+}

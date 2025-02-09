@@ -1,14 +1,24 @@
 import express from 'express';
-import { Router } from 'express';
+import cookieParser from 'cookie-parser';
+import createAuthenticator from './middleware/authenticator';
+
+import tokensRouter from './routes/tokens';
 
 const app = express();
-const router = Router();
 
-router.get('/', (req, res) => {
-  res.send('Hello Youuuuu!');
+const authenticator = createAuthenticator({
+  bypassedEndpoints: [
+    {
+      method: 'GET',
+      url: '/tokens',
+    },
+  ],
 });
 
-app.use(router);
+app.use(express.json());
+app.use(cookieParser());
+app.use(authenticator);
+app.use('/tokens', tokensRouter);
 
 const port = process.env.INNER_PORT || 3001;
 

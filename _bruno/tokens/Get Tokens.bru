@@ -1,0 +1,23 @@
+meta {
+  name: Get Tokens
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{URL}}/tokens
+  body: none
+  auth: none
+}
+
+vars:post-response {
+  accessToken: res.body.AccessToken
+  idToken: res.body.IdToken
+  expiresIn: res.body.ExpiresIn
+}
+
+docs {
+  # Get Tokens
+  
+  If you've previously set a valid **refresh** token that has not expired, you can use this endpoint to retrieve fresh **access** and **id** tokens.
+}
