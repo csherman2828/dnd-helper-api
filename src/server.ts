@@ -1,28 +1,30 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import createAuthenticator from './middleware/authenticator';
+import authenticator from './middleware/authenticator';
 
 import tokensRouter from './routes/tokens';
+import internalErrorHandler from './middleware/errorHandler';
+
+const port = process.env.INNER_PORT || 3001;
 
 const app = express();
-
-const authenticator = createAuthenticator({
-  bypassedEndpoints: [
-    {
-      method: 'GET',
-      url: '/tokens',
-    },
-  ],
-});
 
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
-app.use(authenticator);
+app.use(
+  authenticator({
+    bypassedEndpoints: [
+      {
+        method: 'GET',
+        url: '/tokens',
+      },
+    ],
+  }),
+);
 app.use('/tokens', tokensRouter);
-
-const port = process.env.INNER_PORT || 3001;
+app.use(internalErrorHandler);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

@@ -7,49 +7,35 @@ interface BypassedEndpoint {
   url: string;
 }
 
+interface AuthenticatorInput {
+  bypassedEndpoints?: BypassedEndpoint[];
+}
+
 interface CognitoAccessTokenPayload {
   sub: string;
 }
 
-const verifier = CognitoJwtVerifier.create({
-  userPoolId: 'us-east-1_FZDVMGUa7',
-  clientId: 'gvlfdn5tog93s9n14qp6ijlgd',
-  tokenUse: 'access',
-});
+function authenticator(input?: AuthenticatorInput) {
+  const bypassedEndpoints = input?.bypassedEndpoints;
 
-function setAuth(
-  req: CustomRequest,
-  accessTokenPayload: CognitoAccessTokenPayload,
-) {
-  if (req.ttrpgz) {
-    req.ttrpgz.auth = {
-      sub: accessTokenPayload.sub,
-    };
-    return;
+  function isBypassed(req: Request) {
+    return bypassedEndpoints?.some(
+      endpoint => endpoint.method === req.method && endpoint.url === req.url,
+    );
   }
 
-  req.ttrpgz = {
-    auth: {
-      sub: accessTokenPayload.sub,
-    },
-  };
-}
+  const verifier = CognitoJwtVerifier.create({
+    userPoolId: 'us-east-1_FZDVMGUa7',
+    clientId: 'gvlfdn5tog93s9n14qp6ijlgd',
+    tokenUse: 'access',
+  });
 
-function createAuthenticator({
-  bypassedEndpoints,
-}: {
-  bypassedEndpoints: BypassedEndpoint[];
-}) {
-  return async function authenticator(
-    req: Request,
+  return async function authenticatorMiddleware(
+    req: CustomRequest,
     res: Response,
     next: NextFunction,
   ) {
-    const isBypassed = bypassedEndpoints.some(
-      endpoint => endpoint.method === req.method && endpoint.url === req.url,
-    );
-
-    if (isBypassed) {
+    if (isBypassed(req)) {
       return next();
     }
 
@@ -64,7 +50,20 @@ function createAuthenticator({
     try {
       const accessTokenPayload: CognitoAccessTokenPayload =
         await verifier.verify(accessToken);
-      setAuth(req, accessTokenPayload);
+
+      if (req.ttrpgz) {
+        req.ttrpgz.auth = {
+          sub: accessTokenPayload.sub,
+        };
+        return;
+      }
+
+      req.ttrpgz = {
+        auth: {
+          sub: accessTokenPayload.sub,
+        },
+      };
+
       return next();
     } catch (e) {
       return res.status(401).json({
@@ -73,4 +72,4 @@ function createAuthenticator({
     }
   };
 }
-export default createAuthenticator;
+export default authenticator;
