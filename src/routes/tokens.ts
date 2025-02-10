@@ -23,19 +23,24 @@ authRouter.post('/', async (req: Request, res: Response) => {
     return res.status(400).json({ message: 'Invalid request' });
   }
 
+  // we'll store the refresh token in an a secure, same-site, HTTP only cookie
+  //   code won't be able to access it from the browser
+  //   this keeps it safe from XSS and CSRF attacks
   res.cookie('refreshToken', refreshToken, {
-    httpOnly: true,
-    secure: false,
-    sameSite: 'strict',
-    path: '/tokens',
+    httpOnly: true, // can't be accessed from JS on the browser
+    secure: false, // when set to true, cookie will only be sent over HTTPS
+    sameSite: 'strict', // cookie will only be sent in a first-party context
+    path: '/tokens', // cookie will only be sent to this path
   });
 
   return res.status(200).json({ message: 'Refresh token updated' });
 });
 
 authRouter.get('/', async (req: Request, res: Response) => {
+  // get the refresh token from the cookie
   const refreshToken = req.cookies['refreshToken'] as string;
 
+  // no hint for missing, just say the token is invalid
   if (!refreshToken) {
     return res.status(401).json({ message: 'Invalid refresh token' });
   }
@@ -53,13 +58,15 @@ authRouter.get('/', async (req: Request, res: Response) => {
     const command = new AdminInitiateAuthCommand(params);
     const response = await idpClient.send(command);
 
+    // if successful, send access and id tokens back to the client
     return res.status(200).json(response.AuthenticationResult);
   } catch (error) {
-    console.error(error);
-
     if (error instanceof Error && error.name === 'NotAuthorizedException') {
       return res.status(401).json({ message: 'Invalid refresh token' });
     }
+
+    // unexpected error, log details
+    console.error(error);
 
     return res.status(500).json({ message: 'Internal server error' });
   }
