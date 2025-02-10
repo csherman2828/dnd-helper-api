@@ -10,7 +10,12 @@ const port = process.env.INNER_PORT || 3001;
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: 'http://localhost:5173',
+    credentials: true,
+  }),
+);
 app.use(express.json());
 app.use(cookieParser());
 app.use(

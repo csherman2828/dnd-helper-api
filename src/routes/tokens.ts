@@ -5,6 +5,8 @@ import {
   type AdminInitiateAuthCommandInput,
 } from '@aws-sdk/client-cognito-identity-provider';
 
+import refreshTokenCookieOptions from './refreshTokenCookieOptions';
+
 const idpClient = new CognitoIdentityProviderClient({
   region: 'us-east-1',
 });
@@ -13,25 +15,14 @@ const authRouter: Router = Router();
 
 authRouter.post('/', async (req: Request, res: Response) => {
   const accessToken = req.headers['x-access-token'] as string;
-
-  console.log(req.headers);
-
-  console.log(accessToken);
   const { refreshToken } = req.body;
 
   if (!accessToken || !refreshToken) {
     return res.status(400).json({ message: 'Invalid request' });
   }
 
-  // we'll store the refresh token in an a secure, same-site, HTTP only cookie
-  //   code won't be able to access it from the browser
-  //   this keeps it safe from XSS and CSRF attacks
-  res.cookie('refreshToken', refreshToken, {
-    httpOnly: true, // can't be accessed from JS on the browser
-    secure: false, // when set to true, cookie will only be sent over HTTPS
-    sameSite: 'strict', // cookie will only be sent in a first-party context
-    path: '/tokens', // cookie will only be sent to this path
-  });
+  // set refresh token in HTTP-Only cookie for security
+  res.cookie('refreshToken', refreshToken, refreshTokenCookieOptions);
 
   return res.status(200).json({ message: 'Refresh token updated' });
 });
@@ -65,10 +56,7 @@ authRouter.get('/', async (req: Request, res: Response) => {
       return res.status(401).json({ message: 'Invalid refresh token' });
     }
 
-    // unexpected error, log details
-    console.error(error);
-
-    return res.status(500).json({ message: 'Internal server error' });
+    throw error;
   }
 });
 
