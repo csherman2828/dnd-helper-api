@@ -1,5 +1,6 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 import createAuthenticator from './middleware/authenticator';
 
 import tokensRouter from './routes/tokens';
@@ -15,6 +16,7 @@ const authenticator = createAuthenticator({
   ],
 });
 
+app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 app.use(authenticator);
