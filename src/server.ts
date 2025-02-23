@@ -6,7 +6,7 @@ import authenticator from './middleware/authenticator';
 import tokensRouter from './routes/tokens';
 import internalErrorHandler from './middleware/errorHandler';
 
-const port = process.env.INNER_PORT || 3001;
+const port = +(process.env.PORT || '3000');
 
 const app = express();
 
@@ -25,12 +25,19 @@ app.use(
         method: 'GET',
         url: '/tokens',
       },
+      {
+        method: 'GET',
+        url: '/health',
+      },
     ],
   }),
 );
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
 app.use('/tokens', tokensRouter);
 app.use(internalErrorHandler);
 
-app.listen(port, () => {
+app.listen(port, '0.0.0.0', () => {
   console.log(`Server is running on port ${port}`);
 });
