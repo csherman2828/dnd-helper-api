@@ -33,7 +33,7 @@ app.use(
   }),
 );
 app.get('/health', (req, res) => {
-  res.status(200).send('OK');
+  res.status(200).send('Health: OK');
 });
 app.use('/tokens', tokensRouter);
 app.use(internalErrorHandler);
