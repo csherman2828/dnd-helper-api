@@ -1,7 +1,8 @@
-# D&D Helper (Cloud)
+# D&D Helper (API)
 
-This repository defines Amazon Web Services (AWS) using the AWS Cloud
-Development Kit (CDK) as Infrastructure as Code (IaC).
+This repository contains the REST API for a D&D Helper application written in
+Express.js with TypeScript. It will serve as the backend for the D&D Helper
+application.
 
 ## Install
 
@@ -9,8 +10,8 @@ Clone this repository. Once you have it on your machine, enter the directory and
 install NPM dependencies:
 
 ```bash
-git clone git@github.com:csherman2828/dnd-helper-cloud.git
-cd dnd-helper-cloud
+git clone git@github.com:csherman2828/dnd-helper-api.git
+cd dnd-helper-api
 npm i
 ```
 
