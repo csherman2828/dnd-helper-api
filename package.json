@@ -7,7 +7,9 @@
   "scripts": {
     "build": "tsc",
     "start": "node -r dotenv/config dist/server.js",
-    "dev": "nodemon -r dotenv/config src/server.ts"
+    "dev": "nodemon -r dotenv/config src/server.ts",
+    "build:docker": "docker build -t dnd-helper-express-local .",
+    "start:docker": "docker run -p 3000:3000 dnd-helper-express-local"
   },
   "dependencies": {
     "@eslint/js": "^9.15.0",

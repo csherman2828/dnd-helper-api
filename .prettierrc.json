@@ -9,5 +9,5 @@
   "arrowParens": "avoid",
   "htmlWhitespaceSensitivity": "ignore",
   "endOfLine": "auto",
-  "proseWrap": "preserve"
+  "proseWrap": "always"
 }
