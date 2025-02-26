@@ -1,5 +1,5 @@
 // if a cookie isn't secure, it can't be cross-site according to Chrome
-const isLocal = process.env.TTRPGZ_LOCAL === 'true';
+const isLocal = true || process.env.TTRPGZ_LOCAL === 'true';
 
 let sameSite: 'none' | 'strict';
 let secure: boolean;
@@ -20,7 +20,7 @@ if (isLocal) {
 const httpOnly = true;
 
 // cookie will only be sent to /tokens to use refresh token to get new access token
-const path = '/tokens';
+const path = '/';
 
 // if we don't set a cookie expiration, it expires with the session
 const maxAge = 1000 * 60 * 60 * 24 * 30; // cookie will expire in 30 days

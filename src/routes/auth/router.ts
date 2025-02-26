@@ -79,7 +79,9 @@ authRouter.post('/logout', async (req, res) => {
   try {
     const refreshToken = req.cookies.refreshToken;
 
-    res.clearCookie('refreshToken', refreshTokenCookieOptions);
+    console.log('refreshToken', refreshToken);
+
+    res.clearCookie('refreshToken');
 
     if (refreshToken) {
       const command = new RevokeTokenCommand({
