@@ -12,12 +12,7 @@ const HOST = process.env.CLOUD_HOST || process.env.HOST || 'localhost';
 
 const app = express();
 
-app.use(
-  cors({
-    origin: 'http://localhost:5173',
-    credentials: true,
-  }),
-);
+app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 app.use(
@@ -33,7 +28,11 @@ app.use(
       },
       {
         method: 'POST',
-        url: '/auth',
+        url: '/auth/login',
+      },
+      {
+        method: 'POST',
+        url: '/auth/logout',
       },
       {
         method: 'POST',
