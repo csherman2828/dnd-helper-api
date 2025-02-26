@@ -1,0 +1,22 @@
+meta {
+  name: Login
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{URL}}/auth
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "username":"csherman2828@gmail.com",
+    "password": "TestPassword2!"
+  }
+}
+
+vars:post-response {
+  session: res.body.session
+}
