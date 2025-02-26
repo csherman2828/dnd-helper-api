@@ -17,21 +17,21 @@ const idpClient = new CognitoIdentityProviderClient({
 });
 
 interface AuthBody {
-  username: string;
+  email: string;
   password: string;
 }
 
 const authRouter: Router = Router();
 
 authRouter.post('/', async (req: Request<{}, {}, AuthBody>, res: Response) => {
-  const { username, password } = req.body;
+  const { email, password } = req.body;
 
   const command = new AdminInitiateAuthCommand({
     UserPoolId: COGNITO_USER_POOL_ID,
     ClientId: COGNITO_CLIENT_ID,
     AuthFlow: 'ADMIN_NO_SRP_AUTH',
     AuthParameters: {
-      USERNAME: username,
+      USERNAME: email,
       PASSWORD: password,
     },
   });
@@ -69,14 +69,14 @@ authRouter.post('/', async (req: Request<{}, {}, AuthBody>, res: Response) => {
 });
 
 authRouter.post('/challenge/new-password', async (req, res) => {
-  const { username, newPassword, session } = req.body;
+  const { email, newPassword, session } = req.body;
 
   const command = new AdminRespondToAuthChallengeCommand({
     UserPoolId: COGNITO_USER_POOL_ID,
     ClientId: COGNITO_CLIENT_ID,
     ChallengeName: 'NEW_PASSWORD_REQUIRED',
     ChallengeResponses: {
-      USERNAME: username,
+      USERNAME: email,
       NEW_PASSWORD: newPassword,
     },
     Session: session,
