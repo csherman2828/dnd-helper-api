@@ -20,3 +20,11 @@ body:json {
 vars:post-response {
   session: res.body.session
 }
+
+script:post-response {
+  const cookies = res.getHeader('set-cookie');
+  
+  if(cookies) {
+    bru.setVar("cookie", cookies.join('; '));
+  }
+}

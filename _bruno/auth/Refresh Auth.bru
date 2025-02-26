@@ -1,0 +1,19 @@
+meta {
+  name: Refresh Auth
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{URL}}/auth/refresh
+  body: none
+  auth: bearer
+}
+
+script:pre-request {
+  const cookie = bru.getVar("cookie");
+  
+  if(cookie) {
+    req.setHeader("Cookie", cookie)
+  }
+}

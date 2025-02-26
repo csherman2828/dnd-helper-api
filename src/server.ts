@@ -39,6 +39,10 @@ app.use(
         method: 'POST',
         url: '/auth/challenge/new-password',
       },
+      {
+        method: 'GET',
+        url: '/auth/refresh',
+      },
     ],
   }),
 );

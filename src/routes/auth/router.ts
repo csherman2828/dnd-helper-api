@@ -105,4 +105,46 @@ authRouter.post('/challenge/new-password', async (req, res) => {
   }
 });
 
+authRouter.get('/refresh', async (req, res) => {
+  const refreshToken = req.cookies.refreshToken;
+
+  console.log('Request', req);
+  if (!refreshToken) {
+    return res.status(401).json({ message: 'Cannot refresh auth session' });
+  }
+
+  const command = new AdminInitiateAuthCommand({
+    UserPoolId: COGNITO_USER_POOL_ID,
+    ClientId: COGNITO_CLIENT_ID,
+    AuthFlow: 'REFRESH_TOKEN_AUTH',
+    AuthParameters: {
+      REFRESH_TOKEN: refreshToken,
+    },
+  });
+
+  try {
+    const response = await idpClient.send(command);
+
+    console.log('Response from Cognito:', response);
+
+    if (response.AuthenticationResult) {
+      // if successful, send access and id tokens back to the client
+      const { AccessToken, IdToken, RefreshToken } =
+        response.AuthenticationResult;
+
+      res.cookie('refreshToken', RefreshToken, refreshTokenCookieOptions);
+      return res.status(200).json({
+        accessToken: AccessToken,
+        idToken: IdToken,
+      });
+    }
+
+    console.error('Unhandled response from Cognito:', response);
+    return res.status(500).json({ message: 'Internal server error' });
+  } catch (error) {
+    console.error('Error during refresh:', error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
 export default authRouter;
