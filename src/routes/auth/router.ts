@@ -122,13 +122,14 @@ authRouter.post('/challenge/new-password', async (req, res) => {
 
     if (response.AuthenticationResult) {
       // if successful, send access and id tokens back to the client
-      const { AccessToken, IdToken, RefreshToken } =
+      const { AccessToken, IdToken, RefreshToken, ExpiresIn } =
         response.AuthenticationResult;
 
       res.cookie('refreshToken', RefreshToken, refreshTokenCookieOptions);
       return res.status(200).json({
         accessToken: AccessToken,
         idToken: IdToken,
+        expiresIn: ExpiresIn,
       });
     }
 
