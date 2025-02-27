@@ -163,10 +163,8 @@ authRouter.get('/refresh', async (req, res) => {
 
     if (response.AuthenticationResult) {
       // if successful, send access and id tokens back to the client
-      const { AccessToken, IdToken, RefreshToken, ExpiresIn } =
-        response.AuthenticationResult;
+      const { AccessToken, IdToken, ExpiresIn } = response.AuthenticationResult;
 
-      res.cookie('refreshToken', RefreshToken, refreshTokenCookieOptions);
       return res.status(200).json({
         accessToken: AccessToken,
         idToken: IdToken,
